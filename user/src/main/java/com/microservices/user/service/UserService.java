@@ -26,11 +26,11 @@ public class UserService {
                 .collect(Collectors.toList());
     }
 
-    public Optional<User> fetchOptionalUser(Long id) {
+    public Optional<User> fetchOptionalUser(String id) {
         return repository.findById(id);
     }
 
-    public Optional<UserResponse> fetchOptionalUserResponse(Long id) {
+    public Optional<UserResponse> fetchOptionalUserResponse(String id) {
         return fetchOptionalUser(id).map(this::mapToUserResponse);
     }
 
@@ -40,7 +40,7 @@ public class UserService {
         repository.save(user);
     }
 
-    public boolean updateUser(Long id, UserRequest updatedUser) {
+    public boolean updateUser(String id, UserRequest updatedUser) {
         return fetchOptionalUser(id)
                 .map(existingUser -> {
                     updateUserFromRequest(existingUser, updatedUser);
@@ -50,7 +50,7 @@ public class UserService {
                 .orElse(false);
     }
 
-    public void deleteUser(Long id) {
+    public void deleteUser(String id) {
         repository.deleteById(id);
     }
 
@@ -81,7 +81,7 @@ public class UserService {
                 .withZipcode(user.getAddress().getZipcode());
 
         return new UserResponse()
-                .withId(String.valueOf(user.getId()))
+                .withId(user.getId())
                 .withFirstName(user.getFirstName())
                 .withLastName(user.getLastName())
                 .withEmail(user.getEmail())

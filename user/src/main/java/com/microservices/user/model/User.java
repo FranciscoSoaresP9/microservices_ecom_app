@@ -1,47 +1,32 @@
 package com.microservices.user.model;
 
 
-import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import lombok.Data;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
 
 @Data
-@Entity
-@Table(name = "users", uniqueConstraints = {
-    @UniqueConstraint(columnNames = "email", name = "uk_user_email")
-})
+@Document(collection = "users")
 public class User {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    @NotBlank(message = "First name is required")
+    private String id;
     private String firstName;
-
-    @NotBlank(message = "Last name is required")
     private String lastName;
 
-    @NotBlank(message = "Email is required")
-    @Email(message = "Email should be valid")
+    @Indexed(unique = true)
     private String email;
-
     private String phone;
-
-    @NotNull(message = "Role is required")
+    private Address address;
     private UserRole role = UserRole.CUSTOMER;
 
-    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "address_id", referencedColumnName = "id")
-    private Address address;
-
-    @CreationTimestamp
+    @CreatedDate
     private LocalDateTime createdAt;
 
-    @UpdateTimestamp
+    @LastModifiedBy
     private LocalDateTime updatedAt;
 }
